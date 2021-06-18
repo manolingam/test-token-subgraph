@@ -1,13 +1,45 @@
-type Approval @entity {
-  id: ID!
-  tokenOwner: Bytes! # address
-  spender: Bytes! # address
-  amount: BigInt! # uint256
-}
-
 type Transfer @entity {
   id: ID!
-  from: Bytes! # address
-  to: Bytes! # address
-  amount: BigInt! # uint256
+  sender: Sender!
+  receiver: Receiver!
+  amountTransferred: BigInt!
+  txHash: String!
+  timestamp: BigInt!
+}
+
+type Approval @entity {
+  id: ID!
+  delegator: Delegator!
+  spender: Spender!
+  amountApproved: BigInt!
+  txHash: String!
+  timestamp: BigInt!
+}
+
+type Sender @entity {
+  id: ID!
+  address: Bytes!
+  tokenBalance: BigInt!
+  transactions: [Transfer!]! @derivedFrom(field: "sender")
+}
+
+type Receiver @entity {
+  id: ID!
+  address: Bytes!
+  tokenBalance: BigInt!
+  transactions: [Transfer!]! @derivedFrom(field: "receiver")
+}
+
+type Delegator @entity {
+  id: ID!
+  address: Bytes!
+  tokenBalance: BigInt!
+  transactions: [Approval!]! @derivedFrom(field: "delegator")
+}
+
+type Spender @entity {
+  id: ID!
+  address: Bytes!
+  tokenBalance: BigInt!
+  transactions: [Approval!]! @derivedFrom(field: "spender")
 }
